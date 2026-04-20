@@ -330,12 +330,20 @@ async def root():
 app.include_router(api_router)
 
 # CORS Configuration
+frontend_url = os.environ.get("FRONTEND_URL", "https://julia-semi-joias-frontend.vercel.app")
+cors_origins = os.environ.get("CORS_ORIGINS", frontend_url)
+
+# Parse CORS origins (can be comma-separated)
+allowed_origins = [origin.strip() for origin in cors_origins.split(",")]
+allowed_origins.append("http://localhost:3000")  # For local development
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://julia-semi-joias.preview.emergentagent.com", "http://localhost:3000"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Configure logging
